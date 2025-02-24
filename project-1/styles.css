@@ -4,21 +4,22 @@ body {
     background-repeat: no-repeat;
     height: 100%;
     color: white;
-    width: 1000px;
+    width: 66vw;
     margin-left: auto;
     margin-right: auto;
 
     p {
         font-family: "area-normal", sans-serif;
+        font-size: 1em;
     }
     h1 {
         font-family: "gridlite-pe-variable", sans-serif;
-        font-size: 50px;
+        font-size: 3.125em;
         text-align: center;
     }
     h2 {
         font-family: "punto", sans-serif;
-        font-size: 60px;
+        font-size: 3.75em;
     }
 
     pre {
@@ -43,7 +44,7 @@ body {
     }
 
     #title {
-        width: 700px;
+        width: 47vw;
         margin-left: auto;
         margin-right: auto;
     }
@@ -54,12 +55,19 @@ body {
 }
 
 .day {
-    height: 1400px;
+    height: 180vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(89,89,89,1) 80%, rgba(0,0,0,1) 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -550px;
+        bottom: -70vh;
     }
+}
+#stars {
+    font-family: "area-normal", sans-serif;
+    font-size: 1em;
+    color: black;
+    position: absolute;
+    bottom: -60vh;
 }
