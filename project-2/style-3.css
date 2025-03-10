@@ -1,0 +1,39 @@
+/* Version 3: Ugly */
+body {
+    background-color: blue;
+    background-image: url(images/water.jpg);
+    color: blue;
+    font-family: ff-providence-sans-web-pro, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#animals {
+    display: none;
+}
+
+h1 {
+    font-size: 15vw;
+    width: 30vw;
+}
+
+h2{
+    font-size: 5vw;
+    position: relative;
+    bottom: 7vh;
+    left: 3vw;
+}
+
+#location {
+    font-size: 2vw;
+    position: relative;
+    left: 3vw;
+    bottom: 1vh;
+}
+
+#date {
+    font-size: 2vw;
+    position: relative;
+    left: 3vw;
+    bottom: 3vh;
+}
