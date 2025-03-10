@@ -32,7 +32,7 @@ body {
     }
     h2 {
         font-family: "blur";
-        font-size: 3.5em;
+        font-size: 4vw;
     }
 
     pre {
@@ -80,11 +80,9 @@ body {
     }
 }
 #stars {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: black;
-    bottom: -60vh;
+    bottom: -50vh;
 }
   
 .dropbtn {
@@ -195,106 +193,94 @@ body {
 
 
 .daysecond {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #080808 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 .daythird {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #0F0F0F 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 .dayfourth {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #171717 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 .dayfifth {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #1F1F1F 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 .daysixth {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #262626 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 .dayseventh {
-    height: 180vh;
+    height: 160vh;
     background: rgb(255,255,255);
     background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, #2e2e2e 100%);
     background-repeat: no-repeat;
     .night {
         position: absolute;
-        bottom: -70vh;
+        bottom: -50vh;
     }
 }
 
 
 .starssecond {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #080808;
-    bottom: -60vh;
+    bottom: -40vh;
 }
 .starsthird {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #0F0F0F;
-    bottom: -60vh;
+    bottom: -40vh;
 }
 .starsfourth {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #171717;
-    bottom: -60vh;
+    bottom: -40vh;
 }
 .starsfifth {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #1F1F1F;
-    bottom: -60vh;
+    bottom: -40vh;
 }
 .starssixth {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #262626;
-    bottom: -60vh;
+    bottom: -40vh;
 }
 .starsseventh {
-    font-family: "area-normal", sans-serif;
-    font-size: 1em;
     position: absolute;
     color: #2e2e2e;
-    bottom: -60vh;
+    bottom: -40vh;
 }
