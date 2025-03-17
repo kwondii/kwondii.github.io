@@ -1,0 +1,396 @@
+body {
+    margin: 0;
+    background-color: black;
+    height: 100%;
+    width: 100%;
+    background-image: url(images/light.png);
+    background-size: cover;
+}
+
+.lights {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+.lightstyle {
+    position: absolute;
+    background: radial-gradient(circle, #FFFFFF 0%, #FFFFFF 100%);
+    border-radius: 50%;
+    filter: blur(25px);
+    z-index: 2;
+}
+.light1 {
+    width: 100px;
+    height: 100px;
+    animation: freemove1 20s infinite alternate ease-in-out;
+    opacity: 40%;
+    z-index: 2;
+}
+@keyframes freemove1 {
+    0% {
+      top: 5%;
+      left: 10%;
+    }
+    25% {
+      top: 30%;
+      left: 80%;
+    }
+    50% {
+      top: 90%;
+      left: 50%;
+    }
+    75% {
+      top: 40%;
+      left: 20%;
+    }
+    100% {
+      top: 5%;
+      left: 10%;
+    }
+}
+
+
+.light2 {
+    width: 200px;
+    height: 200px;
+    animation: freemove2 25s infinite alternate ease-in-out;
+    background: radial-gradient(circle, #FFFFFF 0%, #FFFFFF 100%);
+    opacity: 40%;
+    z-index: 2;
+}    
+@keyframes freemove2 {
+    0% {
+        top: 80%;
+        left: 80%;
+    }
+    20% {
+        top: 50%;
+        left: 10%;
+    }
+    55% {
+        top: 10%;
+        left: 50%;
+    }
+    70% {
+        top: 80%;
+        left: 80%;
+    }
+    100% {
+        top: 80%;
+        left: 40%;
+    }
+}
+
+.light3 {
+    width: 60px;
+    height: 60px;
+    animation: freemove3 25s infinite alternate ease-in-out;
+    background: radial-gradient(circle, #FFFFFF 0%, #FFFFFF 100%);
+    opacity: 40%;
+    z-index: 2;
+}
+
+@keyframes freemove3 {
+    0% {
+        top: 40%;
+        left: 40%;
+    }
+    30% {
+        top: 20%;
+        left: 60%;
+    }
+    40% {
+        top: 80%;
+        left: 20%;
+    }
+    80% {
+        top: 10%;
+        left: 80%;
+    }
+    100% {
+        top: 30%;
+        left: 60%;
+    }
+}
+
+.light4 {
+    width: 270px;
+    height: 270px;
+    animation: freemove4 25s infinite alternate ease-in-out;
+    background: radial-gradient(circle, #FFFFFF 0%, #FFFFFF 100%);
+    opacity: 40%;
+    z-index: 2;
+}    
+
+@keyframes freemove4 {
+    0% {
+        top: 30%;
+        left: 90%;
+    }
+    25% {
+        top: 20%;
+        left: 40%;
+    }
+    55% {
+        top: 50%;
+        left: 90%;
+    }
+    80% {
+        top: 70%;
+        left: 10%;
+    }
+    100% {
+        top: 10%;
+        left: 70%;
+    }
+}
+
+.light5 {
+    width: 200px;
+    height: 200px;
+    animation: freemove5 25s infinite alternate ease-in-out;
+    background: radial-gradient(circle, #FFFFFF 0%, #FFFFFF 100%);
+    opacity: 40%;
+    z-index: 2;
+}    
+@keyframes freemove5 {
+    0% {
+        top: 20%;
+        left: 20%;
+    }
+    20% {
+        top: 50%;
+        left: 90%;
+    }
+    55% {
+        top: 90%;
+        left: 50%;
+    }
+    70% {
+        top: 20%;
+        left: 20%;
+    }
+    100% {
+        top: 20%;
+        left: 60%;
+    }
+}
+
+
+h1 {
+    display: flex;
+    font-family: mrs-eaves-xl-serif, serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15vw;
+    color: #B6F5FF;
+    width: 90vw;
+    line-height: 9vw;
+    position: relative;
+    left: 3vw;
+    z-index: 1;
+}
+
+h2 {
+    display: flex;
+    font-family: mrs-eaves-xl-serif, serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15vw;
+    color: #B6F5FF;
+    width: 90vw;
+    line-height: 17vw;
+    position: relative;
+    left: 3vw;
+    z-index: 1;
+}
+
+h3 {
+    display: flex;
+    font-family: mrs-eaves-xl-serif, serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15vw;
+    color: #B6F5FF;
+    width: 90vw;
+    line-height: 5vw;
+    position: relative;
+    left: 4vw;
+    z-index: 1;
+}
+
+h4 {
+    display: flex;
+    font-family: mrs-eaves-xl-serif, serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 15vw;
+    color: #B6F5FF;
+    width: 90vw;
+    line-height: 9vw;
+    position: relative;
+    left: 4vw;
+    z-index: 1;
+}
+
+.wave-text span {
+display: inline-block;
+font-size: 15vw;
+z-index: 1;
+animation: wave 2s ease-in-out infinite;
+}
+
+.wave-text span:nth-child(1) {
+animation-delay: 0s;
+}
+.wave-text span:nth-child(2) {
+animation-delay: 0.2s;
+}
+.wave-text span:nth-child(3) {
+animation-delay: 0.4s;
+}
+.wave-text span:nth-child(4) {
+animation-delay: 0.6s;
+}
+.wave-text span:nth-child(5) {
+animation-delay: 0.8s;
+}
+.wave-text span:nth-child(6) {
+animation-delay: 1.0s;
+}
+.wave-text span:nth-child(7) {
+animation-delay: 1.2s;
+}
+.wave-text span:nth-child(8) {
+animation-delay: 1.4s;
+}
+.wave-text span:nth-child(9) {
+animation-delay: 1.6s;
+}
+.wave-text span:nth-child(10) {
+animation-delay: 1.8s;
+}
+.wave-text span:nth-child(11) {
+animation-delay: 2.0s;
+}
+
+@keyframes wave {
+0%, 100% {
+    transform: translateY(0);
+}
+50% {
+    transform: translateY(-5px);
+}
+}
+
+
+h5 {
+    font-family: mundial, sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 2.5vw;
+    letter-spacing: 0.7vw;
+    color: #B6F5FF;
+    position: relative;
+    left: 4vw;
+    z-index: 1;
+}
+
+p {
+    font-family: mundial, sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 2.5vw;
+    letter-spacing: .7vw;
+    color: #B6F5FF;
+    z-index: 1;
+}
+
+#location {
+    position: relative;
+    left: 4vw;
+    z-index: 1;
+}
+
+#date {
+    position: relative;
+    left: 4vw;
+    bottom: 2vw;
+    z-index: 1;
+}
+
+
+
+.water-container {
+    margin: 0 auto;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    height: 100vw;
+    animation: water-waves linear infinite;
+    z-index: 3;
+    transition: 15s;
+  }
+  .water-wave1 {
+    position: absolute;
+    top: 40%;
+    left: -25%;
+    background: #B6F5FF;
+    opacity: 0.8;
+    width: 200%;
+    height: 200%;
+    border-radius: 40%;
+    animation: inherit;
+    animation-duration: 11s;
+    z-index: 3;
+    filter: blur(5px);
+  }
+
+  .water-wave2 {
+    position: absolute;
+    top: 45%;
+    left: -35%;
+    background: #B6F5FF;
+    opacity: 0.6;
+    width: 200%;
+    height: 200%;
+    border-radius: 35%;
+    animation: inherit;
+    animation-duration: 13s;
+    z-index: 3;
+    filter: blur(5px);
+  }
+
+  .water-wave3 {
+    position: absolute;
+    top: 50%;
+    left: -35%;
+    background: #B6F5FF;
+    opacity: .7;
+    width: 200%;
+    height: 200%;
+    border-radius: 33%;
+    animation: inherit;
+    animation-duration: 17s;
+    z-index: 3;
+    filter: blur(5px);
+  }
+
+  @keyframes water-waves {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+.hover:hover .water-container{
+    position: fixed;
+    bottom: -100vw;
+}
