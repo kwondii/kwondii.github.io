@@ -1,7 +1,58 @@
 body {
-    background-color: cornsilk;
+    background-color: lemonchiffon;
+    background-image: radial-gradient(PaleGoldenRod 20%, transparent 20%), radial-gradient(PaleGoldenRod 20%, transparent 20%);
+    background-position: 0 0, 50px 50px;
+    background-size: 100px 100px;
 
     font-family: "area-normal", sans-serif;
         font-weight: 100;
         font-style: normal;
+
+    h1 {
+        font-size: 6vw;
+        color: olive;
+    }
+
+    h2 {
+        font-size: 3vw;
+        color: plum;
+    }
+
+    ul {
+        font-size: 2vw;
+        color: olive;
+    }
+
+    a:link {
+        text-decoration: none;
+        font-weight: 100; 
+        color: pink;
+    }
+    a:visited {
+        text-decoration: none;
+        font-weight: 100;
+        color: pink;
+    }
+    a:hover {
+        text-decoration: none;
+        font-weight: 800;
+        color: plum;
+    }
+
+    img {
+        position: relative;
+        width: 15vw;
+        height: 15vw;
+    }
+    img:hover {
+        width: 17vw;
+        height: 17vw;
+    }
+
+    .pokemon {
+        max-width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
+
