@@ -1,0 +1,1 @@
+let rangeInput = document.getElementById("range-input")
