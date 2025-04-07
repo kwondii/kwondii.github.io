@@ -1,3 +1,16 @@
 p {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+body {
+    background-color: #d9d9cd;
+
+    p {
+    font-family: ouma-latin-variable, sans-serif;
+    font-variation-settings: "wght" 400;
+    }
+
+    img {
+    width: 100%;
+    }
+}
