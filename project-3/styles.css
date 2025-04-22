@@ -7,10 +7,41 @@ body {
 
     p {
     font-family: ouma-latin-variable, sans-serif;
+    font-size: 1.3vw;
     font-variation-settings: "wght" 400;
+    color: #756d5b;
     }
+
+    h1 {
+        font-family: ouma-latin-variable, sans-serif;
+        font-size: 3vw;
+        font-variation-settings: "wght" 400;
+        color: #756d5b;
+        }
 
     img {
     width: 100%;
     }
+}
+
+#banana {
+    position: absolute;
+    top: 0px;
+}
+#vanilla {
+    position: absolute;
+    top: 0px;
+}
+#sprinkles {
+    position: absolute;
+    top: 0px;
+}
+#rbiscuit {
+    position: absolute;
+    top: 0px;
+}
+
+#strawberry {
+    position: absolute;
+    top: 0px;
 }
