@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dream 15</title>
+  <link rel="stylesheet" href="https://use.typekit.net/duf4kqx.css">
+  <style>
+    html,body{height:100%;margin:0}
+    body{background:#16161d;overflow:hidden;}
+    body.dream1{cursor:none}
+    #container{position:relative;width:100vw;height:100vh}
+    video#cam{position:fixed;left:12px;bottom:12px;width:320px;height:180px;object-fit:cover;z-index:1000;}
+    canvas#overlay{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+    .virtual-cursor{position:fixed;left:0;top:0;width:18px;height:18px;border-radius:50%;background:#d3cec0;transform:translate(-50%,-50%);transition:transform 0.06s linear;z-index:9999;pointer-events:none}
+
+    /* Center dream1 button */
+    #back{
+      position: fixed;
+      top: 64%;
+      left: 2%;
+      z-index: 2000; /* ensure it’s above the video */
+      cursor: pointer;
+      width: 7vw;
+      height: 7vw;
+      background-image: url('images/back.png');
+      background-size: cover;
+      background-color: transparent;
+      border: none;
+    }
+    #back.hand-hover {
+      background-image: url('images/backhover.png');
+    }
+
+    #phobia {
+      position: absolute;
+      top: 0%;
+      left: 0%;
+      margin: 3vw;
+      color: #d800d8; 
+      line-height: 1;
+      font-size: 7vw;
+      font-family: jaf-lapture, serif;
+font-weight: 400;
+font-style: normal;
+    }
+
+#phobia .phobia-letter {
+  display: inline-block;
+  transform: rotate(0deg);     /* default upright */
+}
+
+#phobia .phobia-letter.hand-letter-hover {
+  transform: rotate(180deg);  /* full upside-down rotation */
+}
+
+#phobia .phobia-letter.ripple-1 {
+  transform: rotate(180deg);  /* partial rotation for neighbors */
+}
+
+#phobia .phobia-letter.ripple-2 {
+  transform: rotate(180deg);   /* subtle rotation for outer neighbors */
+}
+
+#phobia {
+  max-width: 100%;
+  white-space: normal;
+  word-break: normal;
+}
+
+/* word container */
+#phobia .phobia-word {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: 0.25em; /* controls word spacing */
+}
+
+/* remove margin on last word */
+#phobia .phobia-word:last-child {
+  margin-right: 0;
+}
+
+  </style>
+</head>
+<body class="dream1">
+
+  <button id="back"></button>
+
+  <div id="container">
+    <video id="cam" autoplay playsinline muted></video>
+    <canvas id="overlay"></canvas>
+  </div>
+
+  <div class="virtual-cursor" id="vcursor"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js?ver=stable"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.4/camera_utils.js?ver=stable"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.4/drawing_utils.js?ver=stable"></script>
+
+  <script>
+  window.onload = () => {
+    const video = document.getElementById('cam');
+    const overlay = document.getElementById('overlay');
+    const ctx = overlay.getContext('2d');
+    vcursor = document.getElementById('vcursor');
+
+    function log(...args){ console.log(...args); }
+
+    function resizeCanvas(){ overlay.width = window.innerWidth; overlay.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+    // Stable hands model
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/${file}`});
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.1,
+      minTrackingConfidence: 0.1
+    });
+    hands.onResults(onHands);
+
+    async function startCamera(){
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:1280, height:720}, audio:false});
+        video.srcObject = stream;
+        await video.play();
+
+        // Offscreen canvas for non-mirrored input to hands
+        const flipped = document.createElement('canvas');
+
+        // Wait until video metadata is loaded to set canvas size
+        video.addEventListener('loadedmetadata', () => {
+          flipped.width = video.videoWidth;
+          flipped.height = video.videoHeight;
+        });
+
+        const sendFrame = async () => {
+          if(video.readyState >= 2){
+            // ensure offscreen canvas size matches (in case loadedmetadata fired earlier)
+            if (flipped.width !== video.videoWidth || flipped.height !== video.videoHeight) {
+              flipped.width = video.videoWidth;
+              flipped.height = video.videoHeight;
+            }
+            const fctx = flipped.getContext('2d');
+            fctx.save();
+            fctx.scale(-1,1); // mirror horizontally for model
+            fctx.drawImage(video, -video.videoWidth, 0);
+            fctx.restore();
+            try{ await hands.send({image: flipped}); }
+            catch(e){ log('hands.send error:', e); }
+          }
+          requestAnimationFrame(sendFrame);
+        };
+        requestAnimationFrame(sendFrame);
+
+      }catch(err){ log('Camera failed:', err); }
+    }
+
+    startCamera();
+
+    // cursor smoothing & state
+    let prevX = window.innerWidth/2, prevY = window.innerHeight/2;
+    let isPinching = false;
+    let pinchStartTime = 0;
+    let pinchStartY = 0;
+    let startScrollY = 0;
+    let isScrolling = false;
+    const CLICK_MAX_DURATION = 500; // ms -> treat as click if released quickly
+    const PINCH_THRESHOLD = 0.05; // normalized distance threshold for pinch
+    const SCROLL_MOVE_THRESHOLD_PX = 12; // px movement before switching to scroll
+    const SCROLL_FACTOR = 1.6; // adjust how finger movement maps to scroll
+
+    function normalizedToWindow(xNorm,yNorm){
+      const x = xNorm*window.innerWidth;
+      const y = yNorm*window.innerHeight;
+      return [x,y];
+    }
+
+    function distance(a,b){
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    }
+
+    function elementAtCursor(x, y){
+      // return topmost clickable element (ignore virtual cursor itself)
+      const el = document.elementFromPoint(x, y);
+      if(!el) return null;
+      if(el.id === 'vcursor') {
+        // temporarily hide vcursor to get underlying element
+        vcursor.style.display = 'none';
+        const underneath = document.elementFromPoint(x, y);
+        vcursor.style.display = '';
+        return underneath || null;
+      }
+      return el;
+    }
+
+    function performClickAt(x, y){
+      const elem = elementAtCursor(x, y);
+      if(elem){
+        elem.dispatchEvent(new MouseEvent('mousedown', {bubbles:true, clientX:x, clientY:y}));
+        elem.dispatchEvent(new MouseEvent('mouseup', {bubbles:true, clientX:x, clientY:y}));
+        elem.click();
+      }
+    }
+
+    function onPinchStart(x, y){
+      isPinching = true;
+      pinchStartTime = Date.now();
+      pinchStartY = y;
+      startScrollY = window.scrollY || window.pageYOffset;
+      isScrolling = false;
+    }
+
+    function onPinchMove(x, y){
+      // If movement exceeds threshold, enter scroll mode
+      if(!isScrolling && Math.abs(y - pinchStartY) > SCROLL_MOVE_THRESHOLD_PX){
+        isScrolling = true;
+      }
+      if(isScrolling){
+        // invert movement so dragging finger up scrolls up (decrease scrollY)
+        const dy = y - pinchStartY;
+        const newScroll = startScrollY + dy * SCROLL_FACTOR;
+        window.scrollTo({ top: newScroll, behavior: 'auto' });
+      }
+    }
+
+    function onPinchEnd(x, y){
+      const duration = Date.now() - pinchStartTime;
+      if(isScrolling){
+        // ended a scroll gesture
+        // nothing additional to do for now
+      } else {
+        // treat as click if short press
+        if(duration <= CLICK_MAX_DURATION){
+          performClickAt(x, y);
+        }
+      }
+      // reset pinch state
+      isPinching = false;
+      isScrolling = false;
+    }
+
+    function handlePinchState(landmarks, x, y){
+      const pinchDist = distance(landmarks[8], landmarks[4]);
+      const pinched = pinchDist < PINCH_THRESHOLD;
+
+      if(pinched && !isPinching){
+        onPinchStart(x, y);
+      } else if(pinched && isPinching){
+        // continue pinch
+        onPinchMove(x, y);
+      } else if(!pinched && isPinching){
+        // release
+        onPinchEnd(x, y);
+      }
+    }
+
+    function onHands(results){
+      ctx.clearRect(0,0,overlay.width,overlay.height);
+      if(results.multiHandLandmarks && results.multiHandLandmarks.length>0){
+        const landmarks = results.multiHandLandmarks[0];
+        if(!landmarks[8] || !landmarks[4]) return;
+
+        // Move virtual cursor to index fingertip
+        const [x,y] = normalizedToWindow(landmarks[8].x, landmarks[8].y);
+        const lerp = (a,b,t)=> a + (b-a)*t;
+        // use smoothing factor for visual following
+        prevX = lerp(prevX, x, 0.7);
+        prevY = lerp(prevY, y, 0.7);
+        vcursor.style.left = prevX+'px';
+        vcursor.style.top = prevY+'px';
+
+        handleHover(prevX, prevY);
+
+        handleLetterHover(prevX, prevY);
+
+
+        // Handle pinch: click vs scroll
+        handlePinchState(landmarks, prevX, prevY);
+      } else {
+        // no hands detected: if user was pinching, consider it ended
+        if(isPinching){
+          onPinchEnd(prevX, prevY);
+        }
+      }
+    }
+
+    // ensure the cursor stays above the centered button
+    vcursor.style.zIndex = 3000;
+
+    // make sure page is scrollable so you can test scrolling
+    // (if your page has no content, add tall content for testing)
+  };
+
+
+let lastHoverElement = null;
+
+function handleHover(x, y){
+  // get element under the hand cursor
+  const elem = document.elementFromPoint(x, y);
+  if(!elem) return;
+
+  // ignore virtual cursor itself
+  if(elem.id === "vcursor") {
+    vcursor.style.display = "none";
+    const realElem = document.elementFromPoint(x, y);
+    vcursor.style.display = "";
+    if(realElem) handleHoverApply(realElem);
+    return;
+  }
+
+  handleHoverApply(elem);
+}
+
+function handleHoverApply(elem){
+  if(elem !== lastHoverElement){
+    // remove hover state from previous
+    if(lastHoverElement){
+      lastHoverElement.classList.remove("hand-hover");
+    }
+    // apply to current
+    elem.classList.add("hand-hover");
+    lastHoverElement = elem;
+  }
+}
+
+  // button behavior
+  document.getElementById('back').addEventListener('click', () => {
+    window.location.href = 'hand_cursor_sync-2.html';
+  });
+
+window.addEventListener("load", () => {
+  const phobia = document.getElementById("phobia");
+  const text = phobia.textContent.trim();
+  phobia.textContent = "";
+
+  const words = text.split(" ");
+  let wordIndex = 0;
+  let letterIndex = 0;
+
+  const speed = 35;
+  let currentWordSpan = null;
+
+  function type() {
+    if (wordIndex >= words.length) return;
+
+    if (!currentWordSpan) {
+      currentWordSpan = document.createElement("span");
+      currentWordSpan.className = "phobia-word";
+      phobia.appendChild(currentWordSpan);
+    }
+
+    const word = words[wordIndex];
+
+    if (letterIndex < word.length) {
+      const letterSpan = document.createElement("span");
+      letterSpan.className = "phobia-letter";
+      letterSpan.textContent = word.charAt(letterIndex);
+      currentWordSpan.appendChild(letterSpan);
+      letterIndex++;
+    } else {
+      // finish word
+      wordIndex++;
+      letterIndex = 0;
+      currentWordSpan = null;
+    }
+
+    setTimeout(type, speed);
+  }
+
+  type();
+});
+
+let lastLetterHover = null;
+
+function clearRipples() {
+  document.querySelectorAll(
+    ".hand-letter-hover, .ripple-1, .ripple-2"
+  ).forEach(el => {
+    el.classList.remove("hand-letter-hover", "ripple-1", "ripple-2");
+  });
+}
+
+function handleLetterHover(x, y) {
+  const el = document.elementFromPoint(x, y);
+
+  if (!el || !el.classList || !el.classList.contains("phobia-letter")) {
+    clearRipples();
+    lastLetterHover = null;
+    return;
+  }
+
+  if (el === lastLetterHover) return;
+
+  clearRipples();
+
+  el.classList.add("hand-letter-hover");
+
+  // collect all letters in order
+  const letters = Array.from(
+    document.querySelectorAll("#phobia .phobia-letter")
+  );
+
+  const index = letters.indexOf(el);
+
+  if (index !== -1) {
+    if (letters[index - 1]) letters[index - 1].classList.add("ripple-1");
+    if (letters[index + 1]) letters[index + 1].classList.add("ripple-1");
+
+    if (letters[index - 2]) letters[index - 2].classList.add("ripple-2");
+    if (letters[index + 2]) letters[index + 2].classList.add("ripple-2");
+  }
+
+  lastLetterHover = el;
+}
+
+  </script>
+
+
+  <p id="phobia">
+   Someone keeps pranking the house. We notice someone is leaving stuff at our doorstep, knocking on the door, or entering the house and moving stuff around. Dad accuses a young boy in the neighborhood and gets the police involved. I do my own investigation outside. He intermittently calls to check up on me. I worry about him. I meet a young woman and invite her into the house. She has light auburn midlength hair, a constant slight smile, and a sickeningly sweet expression on her face. She is sitting on our couch when she suddenly gets up and grabs a pair of scissors from the mail table. She starts walking towards me. I also grab a pair of scissors. She opens the scissors and lunges them at me. I grab the scissors by the open blade in my left hand and use my right hand to cut off the arm holding the scissors. I open and close the scissors back and forth to saw through her forearm. It cuts much easier than expected, like a tough piece of meat. After her arm falls to the ground, I stab a needle into the right side of her neck. She asks me if I can kill her with a flower going through the eye of the needle; she says she wants to die like Jesus. I ignore her and stab the needle into the left side of her neck. I feel like vomiting; there’s a lump in my stomach and throat. I am soaked in her blood. I can't finish her off. I leave her to bleed out on the floor. Dad and Rachel had been watching the entire time. I leave to go outside to get some fresh air. Dad is relieved we will be left alone and calls off the police investigation of the boy he wrongly accused. As I am outside, the landscape changes to an 80s, cyberpunk Tokyo at night in the rain, and I see three Japanese businessmen on a bench in an alley. The alley is dingy, only dimly lit by the cyan and pink neon signs. The ground is damp and water drips from fire escapes above. The bench is facing a dumpster. One of them starts talking to me. He asks if I want to play a game. A woman's voice permeates the darkness, and I see a monstrous face appear in front of the dumpster. The face is round and white like the full moon. Its teeth are pointed and long with a smile in a permanent crescent. It has a tiny, pointed, upturned nose, and its eyes are thin and surrounded by intense dark marks. I understand that the house is still haunted. I must kill a total of three monsters before we can be freed. To defeat this second monster, I must beat her in her game. She makes several attempts to scare me as I walk along a dark path alone at night. I mustn't react or get scared if I want to win. I end up defeating her. Now, the landscape transforms for the last time to reveal the third monster. It is daytime back in America, and we are in a concrete pit at the entrance to a sewage drain. It is a small city with few people walking along on the sidewalk. This time, there is a group of white businessmen drinking from beer cans and laughing. A thin young woman with greasy bleached blonde hair and a short plaid skirt walks past the men as they holler at her. I show up next to her, and tell the men off. I think this girl is my girlfriend. It seems that the reason I initially got close to her was because she knew something about the third monster. I could sense the third one among the businessmen in suits. I could sense every monster throughout the dream; it was like the dream was emphasizing and honing in on one person, like it was telling me this person is important.
+</p>
+
+
+</body>
+</html>
